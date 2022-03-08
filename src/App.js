@@ -10,7 +10,7 @@ import { randomColor } from './utils/common';
 
 var stompClient =null
 const brokerprefix = "kafka"
-const chatRoomId = "kafka-chat"
+const chatRoomId = "testtopic"
 
 const App = () => {
   const [messages, setMessages] = useState([])
@@ -22,7 +22,7 @@ const App = () => {
     stompClient.connect({}, onConnected, onError);
   }
   const onConnected = () => {
-    stompClient.subscribe('/topic/group', onMessageReceived); 
+    stompClient.subscribe('/room/test', onMessageReceived); 
   }
   const onError = (err) => {
     console.log(err);
@@ -38,7 +38,7 @@ const App = () => {
       author: user.username,
       content: msgText
     }
-    stompClient.send(`/${brokerprefix}/${chatRoomId}`, {}, JSON.stringify( msg))
+    stompClient.send(`/${brokerprefix}/${user.username}/${chatRoomId}`, {}, JSON.stringify( msg))
     // chatAPI.sendMessage(user.username, msgText).then(res => {
     //   console.log('Sent', res);
     // }).catch(err => {
