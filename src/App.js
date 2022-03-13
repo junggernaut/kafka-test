@@ -10,19 +10,20 @@ import { randomColor } from './utils/common';
 
 var stompClient =null
 const brokerprefix = "kafka"
-const chatRoomId = "testtopic"
+const roomType = "private"
+const roomId = "testtopic"
 
-const App = () => {
+const App = () =>{
   const [messages, setMessages] = useState([])
   const [user, setUser] = useState(null)
   const SOCKET_URL = 'http://localhost:8080/my-chat/'
-  const connect =()=>{
+  const connect = () =>{
     const Sock = new SockJS(SOCKET_URL)
     stompClient = over(Sock)
     stompClient.connect({}, onConnected, onError);
   }
-  const onConnected = () => {
-    stompClient.subscribe('/room/test', onMessageReceived); 
+  const onConnected = () =>{
+    stompClient.subscribe(`/${roomType}/${roomId}`, onMessageReceived); 
   }
   const onError = (err) => {
     console.log(err);
@@ -36,9 +37,9 @@ const App = () => {
   let onSendMessage = (msgText) => {
     const msg = {
       author: user.username,
-      content: msgText
+      message: msgText
     }
-    stompClient.send(`/${brokerprefix}/${user.username}/${chatRoomId}`, {}, JSON.stringify( msg))
+    stompClient.send(`/${brokerprefix}/${roomType}/${roomId}`, {}, JSON.stringify( msg))
     // chatAPI.sendMessage(user.username, msgText).then(res => {
     //   console.log('Sent', res);
     // }).catch(err => {
